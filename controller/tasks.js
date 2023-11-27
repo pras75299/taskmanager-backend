@@ -9,7 +9,7 @@ const getAllTasks = async (req, res) => {
       data: tasks,
     });
   } catch (error) {
-    res.status(500).send({ message: error });
+    res.status(500).json({ message: error });
   }
 };
 
@@ -22,7 +22,7 @@ const createTasks = async (req, res) => {
     const task = await Task.create(newTask);
     res.status(201).send(task);
   } catch (error) {
-    res.status(500).send({ message: error });
+    res.status(500).json({ message: error });
   }
 };
 
@@ -34,7 +34,7 @@ const getTask = async (req, res) => {
 
     res.status(202).send(singleTask);
   } catch (error) {
-    res.status(500).send({ message: error });
+    res.status(500).json({ message: error });
   }
 };
 
@@ -42,8 +42,16 @@ const updateTask = (req, res) => {
   res.send("update task on file");
 };
 
-const deleteTask = (req, res) => {
-  res.send("delete task from the file");
+const deleteTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const task = await Task.findByIdAndDelete(id);
+    if (!task) {
+      res.send({ message: "book is not found" });
+    }
+    return res.status(200).send({ message: "Task has been deleted" });
+  } catch (error) {}
 };
 
 module.exports = {
