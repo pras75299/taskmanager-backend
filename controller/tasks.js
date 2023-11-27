@@ -38,8 +38,18 @@ const getTask = async (req, res) => {
   }
 };
 
-const updateTask = (req, res) => {
-  res.send("update task on file");
+const updateTask = async (req, res) => {
+  try {
+    if (!req.body.name && !req.body.completed) {
+      return res.status(400).send({ message: "Send all the correct values" });
+    } else {
+      const { id } = req.params;
+      const taskupdate = await Task.findByIdAndUpdate(id, req.body);
+      return res.status(200).send({ message: "Task is updated successfully" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
 };
 
 const deleteTask = async (req, res) => {
